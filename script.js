@@ -1,8 +1,9 @@
 
 /* =====================================
-   My Household Ledger
+   MY HOUSEHOLD LEDGER
    전체 가계부 JavaScript
 ===================================== */
+
 
 /* 1. 기본 설정 */
 
@@ -21,9 +22,12 @@ try {
         item &&
         typeof item.date === "string" &&
         ["income", "expense"].includes(item.type) &&
-        Number.isSafeInteger(item.amount) &&
-        item.amount > 0
-      )
+        Number.isSafeInteger(Number(item.amount)) &&
+        Number(item.amount) > 0
+      ).map(item => ({
+        ...item,
+        amount: Number(item.amount)
+      }))
     : [];
 
 } catch (error) {
@@ -43,7 +47,7 @@ let editingId = null;
 
 /* 2. HTML 요소 연결 */
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 const loginScreen = $("loginScreen");
 const loginForm = $("loginForm");
@@ -77,13 +81,17 @@ function formatMoney(amount) {
   return Number(amount).toLocaleString("ko-KR") + "원";
 }
 
+function createId() {
+  return Date.now().toString() +
+    Math.random().toString(36).slice(2);
+}
+
 function saveData() {
   try {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(transactions)
     );
-
     return true;
 
   } catch (error) {
@@ -93,13 +101,8 @@ function saveData() {
   }
 }
 
-function createId() {
-  return Date.now().toString() +
-    Math.random().toString(36).slice(2);
-}
 
-
-/* 4. 로그인 */
+/* 4. 로그인 기능 */
 
 function showLedger() {
   loginScreen.hidden = true;
@@ -124,7 +127,6 @@ loginForm.addEventListener("submit", function(e) {
   e.preventDefault();
 
   if (passwordInput.value === PASSWORD) {
-
     sessionStorage.setItem("ledgerLogin", "true");
 
     loginError.textContent = "";
@@ -133,10 +135,7 @@ loginForm.addEventListener("submit", function(e) {
     showLedger();
 
   } else {
-
-    loginError.textContent =
-      "비밀번호가 올바르지 않습니다.";
-
+    loginError.textContent = "비밀번호가 올바르지 않습니다.";
     passwordInput.value = "";
     passwordInput.focus();
   }
@@ -147,27 +146,24 @@ loginForm.addEventListener("submit", function(e) {
 
 function renderPeriod() {
 
-  if (viewMode === "all") {
+  const period = $("currentPeriod");
 
-    $("currentPeriod").textContent = "전체 기간";
+  if (viewMode === "all") {
+    period.textContent = "전체 기간";
 
   } else if (viewMode === "year") {
-
-    $("currentPeriod").textContent =
-      `${selectedYear}년`;
+    period.textContent = `${selectedYear}년`;
 
   } else {
-
     const year = selectedMonth.getFullYear();
     const month = selectedMonth.getMonth() + 1;
 
-    $("currentPeriod").textContent =
-      `${year}년 ${month}월`;
+    period.textContent = `${year}년 ${month}월`;
   }
 }
 
 
-/* 6. 조회할 거래 내역 */
+/* 6. 조회 데이터 필터 */
 
 function getVisibleTransactions() {
 
@@ -176,7 +172,6 @@ function getVisibleTransactions() {
   }
 
   if (viewMode === "year") {
-
     return transactions.filter(item =>
       Number(item.date.slice(0, 4)) === selectedYear
     );
@@ -197,47 +192,40 @@ function getVisibleTransactions() {
 
 function renderSummary() {
 
-  const visibleData = getVisibleTransactions();
+  const data = getVisibleTransactions();
 
-  const income = visibleData
+  const income = data
     .filter(item => item.type === "income")
     .reduce((sum, item) => sum + item.amount, 0);
 
-  const expense = visibleData
+  const expense = data
     .filter(item => item.type === "expense")
     .reduce((sum, item) => sum + item.amount, 0);
 
   const balance = income - expense;
 
-  $("totalIncome").textContent =
-    formatMoney(income);
-
-  $("totalExpense").textContent =
-    formatMoney(expense);
-
-  $("totalBalance").textContent =
-    formatMoney(balance);
+  $("totalIncome").textContent = formatMoney(income);
+  $("totalExpense").textContent = formatMoney(expense);
+  $("totalBalance").textContent = formatMoney(balance);
 }
 
 
-/* 8. 거래 내역 표시 */
+/* 8. 거래 내역 출력 */
 
 function renderTransactions() {
 
   const filter = $("filter").value;
 
-  let filtered = getVisibleTransactions();
+  let data = getVisibleTransactions();
 
   if (filter !== "all") {
-    filtered = filtered.filter(item =>
-      item.type === filter
-    );
+    data = data.filter(item => item.type === filter);
   }
 
-  filtered.sort((a, b) => {
-    const dateCompare = b.date.localeCompare(a.date);
+  data.sort((a, b) => {
+    const result = b.date.localeCompare(a.date);
 
-    if (dateCompare !== 0) return dateCompare;
+    if (result !== 0) return result;
 
     return String(b.id).localeCompare(String(a.id));
   });
@@ -246,19 +234,17 @@ function renderTransactions() {
 
   list.replaceChildren();
 
-  if (filtered.length === 0) {
-
+  if (data.length === 0) {
     const empty = document.createElement("div");
 
     empty.className = "empty";
     empty.textContent = "등록된 내역이 없습니다.";
 
     list.appendChild(empty);
-
     return;
   }
 
-  filtered.forEach(item => {
+  data.forEach(item => {
 
     const row = document.createElement("div");
     row.className = "transaction";
@@ -270,8 +256,7 @@ function renderTransactions() {
     title.textContent = item.memo || item.category;
 
     const detail = document.createElement("small");
-    detail.textContent =
-      `${item.date} · ${item.category}`;
+    detail.textContent = `${item.date} · ${item.category}`;
 
     info.append(title, detail);
 
@@ -294,7 +279,6 @@ function renderTransactions() {
     actions.className = "action-buttons";
 
     const editBtn = document.createElement("button");
-
     editBtn.type = "button";
     editBtn.textContent = "수정";
 
@@ -303,7 +287,6 @@ function renderTransactions() {
     });
 
     const deleteBtn = document.createElement("button");
-
     deleteBtn.type = "button";
     deleteBtn.textContent = "삭제";
 
@@ -322,7 +305,7 @@ function renderTransactions() {
 }
 
 
-/* 9. 화면 전체 갱신 */
+/* 9. 전체 화면 갱신 */
 
 function renderAll() {
   renderPeriod();
@@ -338,7 +321,6 @@ function resetForm() {
   form.reset();
 
   if (viewMode === "month") {
-
     dateInput.value = getLocalDate(
       new Date(
         selectedMonth.getFullYear(),
@@ -348,13 +330,11 @@ function resetForm() {
     );
 
   } else if (viewMode === "year") {
-
     dateInput.value = getLocalDate(
       new Date(selectedYear, 0, 1)
     );
 
   } else {
-
     dateInput.value = getLocalDate();
   }
 
@@ -395,18 +375,23 @@ form.addEventListener("submit", function(e) {
     memo: memo
   };
 
+  const originalTransactions = transactions;
+
   if (editingId !== null) {
 
     const index = transactions.findIndex(
       item => item.id === editingId
     );
 
-    if (index !== -1) {
-      transactions[index] = {
-        ...transactions[index],
-        ...data
-      };
+    if (index === -1) {
+      alert("수정할 내역을 찾을 수 없습니다.");
+      return;
     }
+
+    transactions[index] = {
+      ...transactions[index],
+      ...data
+    };
 
   } else {
 
@@ -416,7 +401,10 @@ form.addEventListener("submit", function(e) {
     });
   }
 
-  if (!saveData()) return;
+  if (!saveData()) {
+    transactions = originalTransactions;
+    return;
+  }
 
   resetForm();
   renderAll();
@@ -428,12 +416,12 @@ form.addEventListener("submit", function(e) {
 function editTransaction(id) {
 
   const item = transactions.find(
-    transaction => transaction.id === id
+    transaction => String(transaction.id) === String(id)
   );
 
   if (!item) return;
 
-  editingId = id;
+  editingId = item.id;
 
   typeInput.value = item.type;
   dateInput.value = item.date;
@@ -455,16 +443,14 @@ function editTransaction(id) {
 
 function deleteTransaction(id) {
 
-  const confirmed = confirm(
-    "이 내역을 삭제하시겠습니까?"
-  );
-
-  if (!confirmed) return;
+  if (!confirm("이 내역을 삭제하시겠습니까?")) {
+    return;
+  }
 
   const originalTransactions = transactions;
 
   transactions = transactions.filter(
-    item => item.id !== id
+    item => String(item.id) !== String(id)
   );
 
   if (!saveData()) {
@@ -472,7 +458,7 @@ function deleteTransaction(id) {
     return;
   }
 
-  if (editingId === id) {
+  if (String(editingId) === String(id)) {
     resetForm();
   }
 
@@ -489,25 +475,25 @@ cancelEditBtn.addEventListener("click", resetForm);
 
 $("prevPeriod").addEventListener("click", function() {
 
-  if (viewMode === "year") {
-
-    selectedYear--;
-
-  } else if (viewMode === "month") {
-
-    selectedMonth = new Date(
-      selectedMonth.getFullYear(),
-      selectedMonth.getMonth() - 1,
-      1
-    );
-
-  } else {
+  if (viewMode === "all") {
 
     viewMode = "month";
 
     selectedMonth = new Date(
       new Date().getFullYear(),
       new Date().getMonth() - 1,
+      1
+    );
+
+  } else if (viewMode === "year") {
+
+    selectedYear--;
+
+  } else {
+
+    selectedMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() - 1,
       1
     );
   }
@@ -521,25 +507,25 @@ $("prevPeriod").addEventListener("click", function() {
 
 $("nextPeriod").addEventListener("click", function() {
 
-  if (viewMode === "year") {
-
-    selectedYear++;
-
-  } else if (viewMode === "month") {
-
-    selectedMonth = new Date(
-      selectedMonth.getFullYear(),
-      selectedMonth.getMonth() + 1,
-      1
-    );
-
-  } else {
+  if (viewMode === "all") {
 
     viewMode = "month";
 
     selectedMonth = new Date(
       new Date().getFullYear(),
       new Date().getMonth() + 1,
+      1
+    );
+
+  } else if (viewMode === "year") {
+
+    selectedYear++;
+
+  } else {
+
+    selectedMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() + 1,
       1
     );
   }
