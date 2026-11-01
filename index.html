@@ -7,6 +7,30 @@
   <title>나의 가계부</title>
   <link rel="stylesheet" href="style.css">
 </head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <h1>My Household Ledger</h1>
+    <p>가계부에 접속하려면 비밀번호를 입력하세요.</p>
+
+    <form id="loginForm">
+      <input
+        type="password"
+        id="passwordInput"
+        placeholder="비밀번호 4자리"
+        maxlength="4"
+        inputmode="numeric"
+        required
+      >
+      <button type="submit">로그인</button>
+      <p id="loginError"></p>
+    </form>
+  </div>
+</div>
+  
+<div class="container" id="ledgerApp" hidden>
+    <header>
       <h1>My Household Ledger</h1>
       <p>나의 소중한 돈 관리</p>
     </header>
@@ -123,28 +147,4 @@
 
   <script src="script.js"></script>
 </body>
-
-  
-<div id="loginScreen" class="login-screen">
-  <div class="login-box">
-    <h1>My Household Ledger</h1>
-    <p>가계부에 접속하려면 비밀번호를 입력하세요.</p>
-
-    <form id="loginForm">
-      <input
-        type="password"
-        id="passwordInput"
-        placeholder="비밀번호 4자리"
-        maxlength="4"
-        inputmode="numeric"
-        required
-      >
-      <button type="submit">로그인</button>
-      <p id="loginError"></p>
-    </form>
-  </div>
-</div>
-
-  
-  
 </html>
