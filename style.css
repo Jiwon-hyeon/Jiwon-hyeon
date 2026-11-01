@@ -711,3 +711,12 @@ footer {
 
 }
 
+.month-area [hidden] {
+  display: none !important;
+}
+
+#currentPeriod {
+  font-weight: 700;
+}
+
+
