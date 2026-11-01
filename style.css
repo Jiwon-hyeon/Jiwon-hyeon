@@ -316,3 +316,71 @@ footer {
     font-size: 13px;
   }
 }
+
+
+
+/* 비밀번호 로그인 화면 */
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #f5f7fb;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  padding: 35px 25px;
+  background: white;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+}
+
+.login-box h1 {
+  font-size: 23px;
+  color: #263b5e;
+  margin-bottom: 12px;
+}
+
+.login-box p {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.login-box input {
+  width: 100%;
+  height: 48px;
+  text-align: center;
+  font-size: 20px;
+  letter-spacing: 8px;
+  margin-bottom: 12px;
+}
+
+.login-box button {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 7px;
+  background: #416fc1;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.login-box button:hover {
+  background: #315ba5;
+}
+
+#loginError {
+  color: #e45b53;
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
