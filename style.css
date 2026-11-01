@@ -1,24 +1,9 @@
 
-/* =================================
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+
+/* ==============================
    1. 기본 설정
-================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --primary: #5269d9;
-  --primary-dark: #394fc0;
-  --primary-light: #edf0ff;
-  --income: #3285e8;
-  --expense: #ef6b72;
-  --balance: #19a67a;
-  --dark: #202b45;
-  --gray: #8992a5;
-  --background: #f3f5fa;
-  --white: #ffffff;
-  --border: #edf0f5;
-  --shadow: 0 8px 30px rgba(36, 51, 89, 0.055);
-}
+============================== */
 
 * {
   margin: 0;
@@ -26,203 +11,218 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #f3f6fb;
+  color: #263247;
+  min-height: 100vh;
+  padding: 30px 16px;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #dce3ee;
+  border-radius: 10px;
+  background: #fff;
+  color: #263247;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: #4778e8;
+  box-shadow: 0 0 0 3px rgba(71, 120, 232, 0.12);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #526078;
+}
+
 [hidden] {
   display: none !important;
 }
 
-body {
-  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
-  background: var(--background);
-  color: var(--dark);
-  padding: 35px 20px;
-  min-height: 100vh;
-}
-
-/* =================================
+/* ==============================
    2. 로그인 화면
-================================= */
+============================== */
 
 .login-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
+  min-height: 85vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  background:
-    radial-gradient(circle at 15% 15%, #dce5ff 0, transparent 35%),
-    radial-gradient(circle at 85% 85%, #e1eaff 0, transparent 35%),
-    #f4f6fc;
 }
 
 .login-box {
   width: 100%;
-  max-width: 400px;
-  padding: 45px 35px;
-  background: rgba(255,255,255,0.95);
-  border: 1px solid rgba(255,255,255,0.8);
-  border-radius: 24px;
+  max-width: 390px;
+  padding: 42px 32px;
+  background: #fff;
+  border-radius: 22px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(48, 65, 115, 0.12);
-  animation: fadeUp 0.6s ease;
+  box-shadow: 0 15px 45px rgba(32, 55, 95, 0.09);
 }
 
 .lock-icon {
-  width: 75px;
-  height: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 22px;
-  background: var(--primary-light);
-  border-radius: 22px;
-  font-size: 34px;
+  font-size: 42px;
+  margin-bottom: 16px;
 }
 
 .login-box h1 {
-  font-size: 25px;
+  font-size: 27px;
   font-weight: 800;
-  color: var(--dark);
-  margin-bottom: 12px;
-  letter-spacing: -0.7px;
+  color: #243b65;
+  margin-bottom: 10px;
 }
 
-.login-box p {
-  font-size: 14px;
-  color: var(--gray);
+.login-box > p {
+  font-size: 13px;
+  color: #8a96a9;
   margin-bottom: 25px;
-  line-height: 1.6;
 }
 
 .login-box input {
-  width: 100%;
-  height: 54px;
   text-align: center;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 10px;
-  border: 1px solid var(--border);
-  background: #f8f9fc;
-  border-radius: 12px;
+  letter-spacing: 8px;
+  font-size: 20px;
   margin-bottom: 14px;
-}
-
-.login-box input:focus {
-  background: white;
-  border-color: var(--primary);
 }
 
 .login-box button {
   width: 100%;
-  height: 54px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #6479e8, #4358c6);
+  padding: 14px;
+  background: #416fe0;
   color: white;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 700;
-  cursor: pointer;
-  transition: 0.25s;
-  box-shadow: 0 7px 18px rgba(82,105,217,0.25);
 }
 
 .login-box button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(82,105,217,0.3);
+  background: #315ac2;
 }
 
-.login-box .login-error {
-  color: var(--expense);
-  margin: 15px 0 0;
-  min-height: 17px;
+.login-error {
+  color: #e34e5d;
   font-size: 13px;
+  margin-top: 12px;
+  min-height: 18px;
 }
 
-/* =================================
-   3. 전체 레이아웃
-================================= */
+/* ==============================
+   3. 메인 컨테이너
+============================== */
 
 .container {
-  max-width: 950px;
+  max-width: 1050px;
   margin: 0 auto;
-  animation: fadeUp 0.5s ease;
 }
 
 header {
-  margin-bottom: 35px;
-  position: relative;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 header h1 {
-  font-size: 32px;
+  color: #243b65;
+  font-size: 30px;
   font-weight: 800;
-  color: var(--dark);
-  letter-spacing: -1.2px;
-  margin-bottom: 9px;
+  letter-spacing: -1px;
 }
 
 header p {
-  color: var(--gray);
+  margin-top: 8px;
   font-size: 14px;
+  color: #8a96a9;
 }
 
-/* =================================
-   4. 월 선택
-================================= */
+/* ==============================
+   4. 기간 선택 영역
+============================== */
 
 .month-area {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 28px;
-}
-
-.month-area h2 {
-  min-width: 140px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--dark);
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 25px;
+  padding: 17px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(32, 55, 95, 0.05);
 }
 
 .month-area button {
-  border: 1px solid var(--border);
-  background: white;
-  color: #59647c;
-  border-radius: 11px;
-  min-height: 42px;
   padding: 10px 15px;
-  font-size: 14px;
-  font-weight: 600;
-  transition: 0.2s;
+  border-radius: 9px;
+  background: #edf2fc;
+  color: #4165a8;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .month-area button:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: #dce2ff;
+  background: #416fe0;
+  color: white;
   transform: translateY(-2px);
 }
 
-/* 전체 기간 버튼 */
+#currentPeriod {
+  min-width: 125px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #243b65;
+  padding: 5px;
+}
+
+/* 월별 / 연도별 / 전체 기간 버튼 */
+
+#monthView {
+  background: #eaf0ff;
+  color: #416fe0;
+}
+
+#yearView {
+  background: #e8f6f1;
+  color: #218765;
+}
+
 #allMonths {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  padding: 11px 18px;
-  box-shadow: 0 5px 13px rgba(82,105,217,0.2);
+  background: #fff0e9;
+  color: #d4774c;
 }
 
+#monthView:hover,
+#yearView:hover,
 #allMonths:hover {
-  background: var(--primary-dark);
   color: white;
 }
 
-/* =================================
-   5. 수입 / 지출 요약 카드
-================================= */
+/* ==============================
+   5. 수입 / 지출 / 잔액 카드
+============================== */
 
 .summary {
   display: grid;
@@ -232,205 +232,119 @@ header p {
 }
 
 .summary-card {
-  background: white;
-  border-radius: 18px;
-  padding: 27px 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(235,239,247,0.8);
-  position: relative;
-  overflow: hidden;
-  transition: 0.25s;
+  padding: 25px 22px;
+  background: #fff;
+  border-radius: 17px;
+  box-shadow: 0 5px 20px rgba(32, 55, 95, 0.05);
+  border-top: 4px solid transparent;
 }
 
-.summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 13px 30px rgba(36,51,89,0.09);
-}
-
-.summary-card span {
-  display: block;
+.summary-card h3 {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--gray);
-  margin-bottom: 17px;
+  font-weight: 700;
+  color: #7d899c;
+  margin-bottom: 13px;
 }
 
-.summary-card strong {
-  display: block;
-  font-size: clamp(18px, 2.4vw, 26px);
+.summary-card p {
+  font-size: 25px;
   font-weight: 800;
-  letter-spacing: -0.8px;
-  overflow-wrap: anywhere;
+  letter-spacing: -0.5px;
+  word-break: break-all;
 }
 
-.summary-card::after {
-  content: '';
-  position: absolute;
-  right: -18px;
-  top: -18px;
-  width: 85px;
-  height: 85px;
-  border-radius: 50%;
-  opacity: 0.08;
+.summary-card.income {
+  border-top-color: #26a77a;
 }
 
-.income {
-  border-bottom: 4px solid var(--income);
+.summary-card.income p {
+  color: #21966e;
 }
 
-.income strong {
-  color: var(--income);
+.summary-card.expense {
+  border-top-color: #e56a72;
 }
 
-.income::after {
-  background: var(--income);
+.summary-card.expense p {
+  color: #dc5965;
 }
 
-.expense {
-  border-bottom: 4px solid var(--expense);
+.summary-card.balance {
+  border-top-color: #4778e8;
 }
 
-.expense strong {
-  color: var(--expense);
+.summary-card.balance p {
+  color: #416fe0;
 }
 
-.expense::after {
-  background: var(--expense);
-}
-
-.balance {
-  border-bottom: 4px solid var(--balance);
-}
-
-.balance strong {
-  color: var(--balance);
-}
-
-.balance::after {
-  background: var(--balance);
-}
-
-/* =================================
+/* ==============================
    6. 입력 영역
-================================= */
+============================== */
 
 .form-section,
 .list-section {
-  background: white;
-  border-radius: 19px;
-  padding: 30px;
-  margin-bottom: 22px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(235,239,247,0.8);
+  background: #fff;
+  padding: 27px;
+  border-radius: 17px;
+  box-shadow: 0 5px 20px rgba(32, 55, 95, 0.05);
+  margin-bottom: 25px;
 }
 
 .form-section h2,
 .list-section h2 {
-  font-size: 20px;
+  color: #263b60;
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--dark);
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.form-grid > div {
-  min-width: 0;
-}
-
-.form-grid .full-width {
+.full-width {
   grid-column: 1 / -1;
-}
-
-label {
-  display: block;
-  color: #667087;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 9px;
-}
-
-input,
-select {
-  width: 100%;
-  height: 48px;
-  padding: 0 14px;
-  border: 1px solid #e7eaf1;
-  border-radius: 10px;
-  background: #fafbfe;
-  color: var(--dark);
-  font-family: inherit;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-input:focus,
-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(82,105,217,0.09);
-}
-
-input::placeholder {
-  color: #b4bac7;
-}
-
-/* =================================
-   7. 버튼 디자인
-================================= */
-
-button {
-  font-family: inherit;
-  cursor: pointer;
 }
 
 .add-btn {
   width: 100%;
-  height: 52px;
-  margin-top: 25px;
-  border: none;
+  padding: 15px;
+  margin-top: 22px;
   border-radius: 11px;
-  background: linear-gradient(135deg, #6479e8, #4358c6);
+  background: #416fe0;
   color: white;
   font-size: 15px;
   font-weight: 700;
-  box-shadow: 0 6px 15px rgba(82,105,217,0.2);
-  transition: 0.25s;
 }
 
 .add-btn:hover {
+  background: #315ac2;
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(82,105,217,0.25);
 }
 
 .cancel-btn {
   width: 100%;
-  height: 45px;
+  padding: 13px;
   margin-top: 10px;
-  border: none;
   border-radius: 10px;
-  background: #f0f2f7;
-  color: #68728a;
+  background: #eef1f6;
+  color: #68758a;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* =================================
-   8. 거래 내역
-================================= */
+/* ==============================
+   7. 거래 내역
+============================== */
 
 .list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .list-header h2 {
@@ -438,10 +352,9 @@ button {
 }
 
 .list-header select {
-  width: 145px;
-  height: 42px;
-  font-size: 13px;
-  font-weight: 600;
+  width: auto;
+  min-width: 130px;
+  padding: 10px 12px;
 }
 
 .transaction {
@@ -449,33 +362,30 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  padding: 19px 10px;
-  border-bottom: 1px solid #f0f1f5;
-  transition: background 0.2s;
-  border-radius: 9px;
-  animation: fadeUp 0.3s ease;
+  padding: 18px 5px;
+  border-bottom: 1px solid #edf0f5;
 }
 
-.transaction:hover {
-  background: #fafbff;
+.transaction:last-child {
+  border-bottom: none;
 }
 
 .transaction-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   min-width: 0;
 }
 
 .transaction-info strong {
-  display: block;
   font-size: 15px;
-  font-weight: 700;
-  color: var(--dark);
-  margin-bottom: 7px;
-  overflow-wrap: anywhere;
+  color: #34435c;
+  word-break: break-word;
 }
 
 .transaction-info small {
   font-size: 12px;
-  color: #9ba3b3;
+  color: #99a3b2;
 }
 
 .transaction-right {
@@ -485,20 +395,18 @@ button {
 }
 
 .transaction-amount {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   white-space: nowrap;
 }
 
 .amount-income {
-  color: var(--income);
+  color: #21966e;
 }
 
 .amount-expense {
-  color: var(--expense);
+  color: #dc5965;
 }
-
-/* 수정 / 삭제 버튼 */
 
 .action-buttons {
   display: flex;
@@ -506,188 +414,86 @@ button {
 }
 
 .action-buttons button {
-  border: 1px solid #e9ecf3;
-  background: white;
-  color: #758097;
   padding: 7px 10px;
+  background: #f0f3f8;
+  color: #65748b;
   border-radius: 7px;
   font-size: 12px;
   font-weight: 600;
-  transition: 0.2s;
 }
 
 .action-buttons button:hover {
-  background: var(--primary-light);
-  border-color: #dce2ff;
-  color: var(--primary);
+  background: #416fe0;
+  color: #fff;
 }
-
-.action-buttons button:last-child:hover {
-  background: #fff0f0;
-  border-color: #ffdada;
-  color: var(--expense);
-}
-
-/* 내역 없음 */
 
 .empty {
-  padding: 55px 15px;
   text-align: center;
-  color: #a3aabb;
+  padding: 55px 15px;
+  color: #a0aabb;
   font-size: 14px;
 }
 
-/* =================================
-   9. 하단
-================================= */
+/* ==============================
+   8. 하단
+============================== */
 
 footer {
   text-align: center;
-  color: #aab1bf;
+  padding: 20px;
+  color: #a1aabb;
   font-size: 12px;
-  padding: 25px 10px;
 }
 
-/* =================================
-   10. 애니메이션
-================================= */
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =================================
-   11. 태블릿 / 모바일
-================================= */
+/* ==============================
+   9. 모바일 반응형
+============================== */
 
 @media (max-width: 700px) {
 
   body {
-    padding: 25px 13px;
-  }
-
-  header {
-    margin-bottom: 25px;
+    padding: 20px 12px;
   }
 
   header h1 {
-    font-size: 25px;
+    font-size: 24px;
   }
 
   .summary {
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .summary-card {
-    padding: 20px 12px;
-    border-radius: 13px;
+    padding: 20px;
   }
 
-  .summary-card span {
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
-
-  .summary-card strong {
-    font-size: 17px;
+  .summary-card p {
+    font-size: 23px;
   }
 
   .form-section,
   .list-section {
-    padding: 22px 16px;
-    border-radius: 15px;
+    padding: 20px 16px;
   }
 
   .month-area {
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .month-area h2 {
-    font-size: 19px;
-    min-width: 115px;
+    gap: 7px;
+    padding: 13px 8px;
   }
 
   .month-area button {
     padding: 9px 11px;
-  }
-
-  #allMonths {
-    padding: 10px 13px;
-  }
-
-}
-
-@media (max-width: 480px) {
-
-  body {
-    padding: 20px 10px;
-  }
-
-  header h1 {
-    font-size: 22px;
-  }
-
-  .summary {
-    gap: 7px;
-  }
-
-  .summary-card {
-    padding: 16px 8px;
-  }
-
-  .summary-card span {
-    font-size: 11px;
-  }
-
-  .summary-card strong {
-    font-size: 14px;
-    letter-spacing: -0.5px;
-  }
-
-  .month-area {
-    gap: 6px;
-  }
-
-  .month-area h2 {
-    min-width: 105px;
-    font-size: 17px;
-  }
-
-  .month-area button {
     font-size: 12px;
-    padding: 9px 9px;
   }
 
-  #allMonths {
-    font-size: 12px;
-    padding: 10px 11px;
-  }
-
-  .form-grid {
-    gap: 14px 10px;
-  }
-
-  .form-section,
-  .list-section {
-    padding: 20px 13px;
-  }
-
-  .list-header select {
-    width: 125px;
+  #currentPeriod {
+    min-width: 110px;
+    font-size: 18px;
   }
 
   .transaction {
     align-items: flex-start;
-    padding: 16px 3px;
   }
 
   .transaction-right {
@@ -695,9 +501,29 @@ footer {
     align-items: flex-end;
     gap: 8px;
   }
+}
+
+@media (max-width: 450px) {
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .list-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .list-header select {
+    width: 100%;
+  }
 
   .transaction-amount {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .action-buttons button {
@@ -705,18 +531,4 @@ footer {
     font-size: 11px;
   }
 
-  .login-box {
-    padding: 35px 22px;
-  }
-
 }
-
-.month-area [hidden] {
-  display: none !important;
-}
-
-#currentPeriod {
-  font-weight: 700;
-}
-
-
