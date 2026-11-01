@@ -1,1 +1,311 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Household Ledger</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =========================
+       로그인 화면
+  ========================== -->
+
+  <div id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+      <div class="lock-icon">🔒</div>
+
+      <h1>My Household Ledger</h1>
+
+      <p>가계부에 접속하려면 비밀번호를 입력하세요.</p>
+
+      <form id="loginForm">
+
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="비밀번호 4자리"
+          maxlength="4"
+          inputmode="numeric"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit">로그인</button>
+
+        <p id="loginError" class="login-error" aria-live="polite"></p>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       가계부 메인 화면
+  ========================== -->
+
+  <div class="container" id="ledgerApp" hidden>
+
+    <!-- 상단 제목 -->
+
+    <header>
+
+      <h1>My Household Ledger</h1>
+
+      <p>나의 소중한 돈 관리</p>
+
+    </header>
+
+
+    <!-- 월 선택 및 전체 기간 -->
+
+    <section class="month-area">
+
+      <button type="button" id="prevMonth">❮</button>
+
+      <h2 id="currentMonth"></h2>
+
+      <button type="button" id="nextMonth">❯</button>
+
+      <button type="button" id="allMonths">전체 기간</button>
+
+    </section>
+
+
+    <!-- 수입 / 지출 / 잔액 -->
+
+    <section class="summary">
+
+      <div class="summary-card income">
+
+        <span>총 수입</span>
+
+        <strong id="totalIncome">0원</strong>
+
+      </div>
+
+
+      <div class="summary-card expense">
+
+        <span>총 지출</span>
+
+        <strong id="totalExpense">0원</strong>
+
+      </div>
+
+
+      <div class="summary-card balance">
+
+        <span>잔액</span>
+
+        <strong id="totalBalance">0원</strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- 내역 입력 -->
+
+    <section class="form-section">
+
+      <h2>내역 추가</h2>
+
+      <form id="ledgerForm">
+
+        <div class="form-grid">
+
+
+          <!-- 수입 / 지출 -->
+
+          <div>
+
+            <label for="type">구분</label>
+
+            <select id="type">
+
+              <option value="expense">지출</option>
+
+              <option value="income">수입</option>
+
+            </select>
+
+          </div>
+
+
+          <!-- 날짜 -->
+
+          <div>
+
+            <label for="date">날짜</label>
+
+            <input
+              type="date"
+              id="date"
+              required
+            >
+
+          </div>
+
+
+          <!-- 카테고리 -->
+
+          <div>
+
+            <label for="category">카테고리</label>
+
+            <select id="category">
+
+              <optgroup label="지출">
+
+                <option value="식비">식비</option>
+                <option value="교통">교통</option>
+                <option value="쇼핑">쇼핑</option>
+                <option value="생활">생활</option>
+                <option value="주거">주거</option>
+                <option value="의료">의료</option>
+                <option value="문화">문화</option>
+                <option value="통신">통신</option>
+                <option value="교육">교육</option>
+
+              </optgroup>
+
+              <optgroup label="수입">
+
+                <option value="급여">급여</option>
+                <option value="상여금">상여금</option>
+                <option value="부수입">부수입</option>
+                <option value="이자">이자</option>
+
+              </optgroup>
+
+              <option value="기타">기타</option>
+
+            </select>
+
+          </div>
+
+
+          <!-- 금액 -->
+
+          <div>
+
+            <label for="amount">금액 (원)</label>
+
+            <input
+              type="number"
+              id="amount"
+              min="1"
+              step="1"
+              placeholder="금액 입력"
+              required
+            >
+
+          </div>
+
+
+          <!-- 내용 -->
+
+          <div class="full-width">
+
+            <label for="memo">내용</label>
+
+            <input
+              type="text"
+              id="memo"
+              placeholder="예: 점심 식사, 월급"
+              maxlength="100"
+            >
+
+          </div>
+
+
+        </div>
+
+
+        <!-- 등록 버튼 -->
+
+        <button
+          type="submit"
+          class="add-btn"
+          id="submitBtn"
+        >
+          내역 추가하기
+        </button>
+
+
+        <!-- 수정 취소 -->
+
+        <button
+          type="button"
+          class="cancel-btn"
+          id="cancelEdit"
+          hidden
+        >
+          수정 취소
+        </button>
+
+
+      </form>
+
+    </section>
+
+
+    <!-- 거래 내역 -->
+
+    <section class="list-section">
+
+
+      <div class="list-header">
+
+        <h2>거래 내역</h2>
+
+        <select id="filter">
+
+          <option value="all">전체 내역</option>
+
+          <option value="income">수입만 보기</option>
+
+          <option value="expense">지출만 보기</option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 거래 목록 표시 -->
+
+      <div id="transactionList"></div>
+
+
+    </section>
+
+
+    <!-- 하단 -->
+
+    <footer>
+
+      <p>My Household Ledger © 2026</p>
+
+    </footer>
+
+
+  </div>
+
+
+  <!-- JavaScript -->
+
+  <script src="script.js"></script>
+
+</body>
+</html>
+
