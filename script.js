@@ -4,13 +4,9 @@
    전체 가계부 JavaScript
 ===================================== */
 
-
-/* =====================================
-   1. 기본 설정 및 변수
-===================================== */
+/* 1. 기본 설정 */
 
 const PASSWORD = "5180";
-
 const STORAGE_KEY = "myHouseholdLedger";
 
 let transactions = [];
@@ -31,19 +27,21 @@ try {
     : [];
 
 } catch (error) {
-  console.error("저장된 가계부 데이터를 불러오지 못했습니다.", error);
+  console.error("저장된 데이터를 불러오지 못했습니다.", error);
 }
 
 let selectedMonth = new Date();
+let selectedYear = new Date().getFullYear();
 
-let viewAllMonths = true;
+let viewMode = "all";
+// all = 전체 기간
+// year = 연도별
+// month = 월별
 
 let editingId = null;
 
 
-/* =====================================
-   2. HTML 요소 연결
-===================================== */
+/* 2. HTML 요소 연결 */
 
 const $ = (id) => document.getElementById(id);
 
@@ -51,7 +49,6 @@ const loginScreen = $("loginScreen");
 const loginForm = $("loginForm");
 const passwordInput = $("passwordInput");
 const loginError = $("loginError");
-
 const ledgerApp = $("ledgerApp");
 
 const form = $("ledgerForm");
@@ -66,39 +63,20 @@ const submitBtn = $("submitBtn");
 const cancelEditBtn = $("cancelEdit");
 
 
-/* =====================================
-   3. 공통 함수
-===================================== */
+/* 3. 공통 함수 */
 
-// 날짜를 YYYY-MM-DD 형식으로 반환
 function getLocalDate(date = new Date()) {
   const year = date.getFullYear();
-
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, "0");
-
-  const day = String(
-    date.getDate()
-  ).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 }
 
-
-// 금액에 쉼표 표시
 function formatMoney(amount) {
   return Number(amount).toLocaleString("ko-KR") + "원";
 }
 
-
-// 날짜에서 연월 추출
-function getMonthKey(date) {
-  return date.slice(0, 7);
-}
-
-
-// 데이터 저장
 function saveData() {
   try {
     localStorage.setItem(
@@ -109,34 +87,27 @@ function saveData() {
     return true;
 
   } catch (error) {
-    alert("데이터 저장에 실패했습니다. 브라우저 저장 공간을 확인해주세요.");
+    alert("데이터 저장에 실패했습니다.");
     console.error(error);
     return false;
   }
 }
 
-
-// 고유 ID 생성
 function createId() {
   return Date.now().toString() +
     Math.random().toString(36).slice(2);
 }
 
 
-/* =====================================
-   4. 비밀번호 로그인
-===================================== */
+/* 4. 로그인 */
 
 function showLedger() {
   loginScreen.hidden = true;
   ledgerApp.hidden = false;
-
   renderAll();
 }
 
-
 function initializeLogin() {
-
   const isLoggedIn =
     sessionStorage.getItem("ledgerLogin") === "true";
 
@@ -145,27 +116,18 @@ function initializeLogin() {
   } else {
     loginScreen.hidden = false;
     ledgerApp.hidden = true;
-
     passwordInput.focus();
   }
-
 }
 
-
-// 로그인 버튼
 loginForm.addEventListener("submit", function(e) {
-
   e.preventDefault();
 
   if (passwordInput.value === PASSWORD) {
 
-    sessionStorage.setItem(
-      "ledgerLogin",
-      "true"
-    );
+    sessionStorage.setItem("ledgerLogin", "true");
 
     loginError.textContent = "";
-
     passwordInput.value = "";
 
     showLedger();
@@ -176,45 +138,48 @@ loginForm.addEventListener("submit", function(e) {
       "비밀번호가 올바르지 않습니다.";
 
     passwordInput.value = "";
-
     passwordInput.focus();
-
   }
-
 });
 
 
-/* =====================================
-   5. 월별 / 전체 기간 표시
-===================================== */
+/* 5. 기간 표시 */
 
-function renderMonth() {
+function renderPeriod() {
 
-  if (viewAllMonths) {
+  if (viewMode === "all") {
 
-    $("currentMonth").textContent = "전체 기간";
+    $("currentPeriod").textContent = "전체 기간";
 
-    return;
+  } else if (viewMode === "year") {
+
+    $("currentPeriod").textContent =
+      `${selectedYear}년`;
+
+  } else {
+
+    const year = selectedMonth.getFullYear();
+    const month = selectedMonth.getMonth() + 1;
+
+    $("currentPeriod").textContent =
+      `${year}년 ${month}월`;
   }
-
-  const year = selectedMonth.getFullYear();
-
-  const month = selectedMonth.getMonth() + 1;
-
-  $("currentMonth").textContent =
-    `${year}년 ${month}월`;
-
 }
 
 
-/* =====================================
-   6. 조회 대상 데이터
-===================================== */
+/* 6. 조회할 거래 내역 */
 
 function getVisibleTransactions() {
 
-  if (viewAllMonths) {
+  if (viewMode === "all") {
     return [...transactions];
+  }
+
+  if (viewMode === "year") {
+
+    return transactions.filter(item =>
+      Number(item.date.slice(0, 4)) === selectedYear
+    );
   }
 
   const monthKey =
@@ -223,42 +188,26 @@ function getVisibleTransactions() {
     ).padStart(2, "0")}`;
 
   return transactions.filter(item =>
-    getMonthKey(item.date) === monthKey
+    item.date.slice(0, 7) === monthKey
   );
-
 }
 
 
-/* =====================================
-   7. 수입 / 지출 합계 계산
-===================================== */
+/* 7. 수입 / 지출 합계 */
 
 function renderSummary() {
 
   const visibleData = getVisibleTransactions();
 
   const income = visibleData
-
     .filter(item => item.type === "income")
-
-    .reduce(
-      (sum, item) => sum + item.amount,
-      0
-    );
-
+    .reduce((sum, item) => sum + item.amount, 0);
 
   const expense = visibleData
-
     .filter(item => item.type === "expense")
-
-    .reduce(
-      (sum, item) => sum + item.amount,
-      0
-    );
-
+    .reduce((sum, item) => sum + item.amount, 0);
 
   const balance = income - expense;
-
 
   $("totalIncome").textContent =
     formatMoney(income);
@@ -268,13 +217,10 @@ function renderSummary() {
 
   $("totalBalance").textContent =
     formatMoney(balance);
-
 }
 
 
-/* =====================================
-   8. 거래 내역 출력
-===================================== */
+/* 8. 거래 내역 표시 */
 
 function renderTransactions() {
 
@@ -282,93 +228,55 @@ function renderTransactions() {
 
   let filtered = getVisibleTransactions();
 
-
-  // 수입 / 지출 필터
-
   if (filter !== "all") {
-
-    filtered = filtered.filter(
-      item => item.type === filter
+    filtered = filtered.filter(item =>
+      item.type === filter
     );
-
   }
 
-
-  // 최신 날짜 순서
-
   filtered.sort((a, b) => {
+    const dateCompare = b.date.localeCompare(a.date);
 
-    const dateCompare =
-      b.date.localeCompare(a.date);
-
-    if (dateCompare !== 0) {
-      return dateCompare;
-    }
+    if (dateCompare !== 0) return dateCompare;
 
     return String(b.id).localeCompare(String(a.id));
-
   });
-
 
   const list = $("transactionList");
 
   list.replaceChildren();
-
-
-  // 내역이 없을 때
 
   if (filtered.length === 0) {
 
     const empty = document.createElement("div");
 
     empty.className = "empty";
-
-    empty.textContent =
-      "등록된 내역이 없습니다.";
+    empty.textContent = "등록된 내역이 없습니다.";
 
     list.appendChild(empty);
 
     return;
   }
 
-
-  // 거래 내역 생성
-
   filtered.forEach(item => {
 
     const row = document.createElement("div");
-
     row.className = "transaction";
 
-
-    // 내역 정보
-
     const info = document.createElement("div");
-
     info.className = "transaction-info";
 
-
     const title = document.createElement("strong");
-
-    title.textContent =
-      item.memo || item.category;
-
+    title.textContent = item.memo || item.category;
 
     const detail = document.createElement("small");
-
     detail.textContent =
       `${item.date} · ${item.category}`;
 
-
     info.append(title, detail);
 
-
-    // 금액 및 버튼 영역
-
     const right = document.createElement("div");
-
     right.className = "transaction-right";
-
 
     const amount = document.createElement("span");
 
@@ -378,46 +286,30 @@ function renderTransactions() {
         ? "amount-income"
         : "amount-expense");
 
-
     amount.textContent =
       (item.type === "income" ? "+" : "-") +
       formatMoney(item.amount);
 
-
-    // 수정 버튼
-
     const actions = document.createElement("div");
-
     actions.className = "action-buttons";
-
 
     const editBtn = document.createElement("button");
 
     editBtn.type = "button";
-
     editBtn.textContent = "수정";
 
     editBtn.addEventListener("click", () => {
-
       editTransaction(item.id);
-
     });
-
-
-    // 삭제 버튼
 
     const deleteBtn = document.createElement("button");
 
     deleteBtn.type = "button";
-
     deleteBtn.textContent = "삭제";
 
     deleteBtn.addEventListener("click", () => {
-
       deleteTransaction(item.id);
-
     });
-
 
     actions.append(editBtn, deleteBtn);
 
@@ -426,40 +318,26 @@ function renderTransactions() {
     row.append(info, right);
 
     list.appendChild(row);
-
   });
-
 }
 
 
-/* =====================================
-   9. 전체 화면 새로고침
-===================================== */
+/* 9. 화면 전체 갱신 */
 
 function renderAll() {
-
-  renderMonth();
-
+  renderPeriod();
   renderSummary();
-
   renderTransactions();
-
 }
 
 
-/* =====================================
-   10. 입력 폼 초기화
-===================================== */
+/* 10. 입력 폼 초기화 */
 
 function resetForm() {
 
   form.reset();
 
-  if (viewAllMonths) {
-
-    dateInput.value = getLocalDate();
-
-  } else {
+  if (viewMode === "month") {
 
     dateInput.value = getLocalDate(
       new Date(
@@ -469,85 +347,53 @@ function resetForm() {
       )
     );
 
+  } else if (viewMode === "year") {
+
+    dateInput.value = getLocalDate(
+      new Date(selectedYear, 0, 1)
+    );
+
+  } else {
+
+    dateInput.value = getLocalDate();
   }
 
   editingId = null;
 
   submitBtn.textContent = "내역 추가하기";
-
   cancelEditBtn.hidden = true;
-
 }
 
 
-/* =====================================
-   11. 수입 / 지출 등록
-===================================== */
+/* 11. 수입 / 지출 등록 */
 
 form.addEventListener("submit", function(e) {
 
   e.preventDefault();
 
-
   const amount = Number(amountInput.value);
-
   const date = dateInput.value;
-
   const memo = memoInput.value.trim();
 
-
-  // 금액 검사
-
-  if (
-    !Number.isSafeInteger(amount) ||
-    amount <= 0
-  ) {
-
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
     alert("1원 이상의 올바른 금액을 입력해주세요.");
-
     amountInput.focus();
-
     return;
   }
 
-
-  // 날짜 검사
-
-  if (!date) {
-
-    alert("날짜를 입력해주세요.");
-
-    dateInput.focus();
-
-    return;
-  }
-
-
-  // 미래 날짜도 허용하며 날짜 형식만 검사
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     alert("올바른 날짜를 입력해주세요.");
-
+    dateInput.focus();
     return;
   }
-
 
   const data = {
-
     type: typeInput.value,
-
     date: date,
-
     category: categoryInput.value,
-
     amount: amount,
-
     memo: memo
-
   };
-
-
-  // 기존 내역 수정
 
   if (editingId !== null) {
 
@@ -556,50 +402,28 @@ form.addEventListener("submit", function(e) {
     );
 
     if (index !== -1) {
-
-      const oldData = transactions[index];
-
       transactions[index] = {
-        ...oldData,
+        ...transactions[index],
         ...data
       };
-
     }
 
-  }
-
-
-  // 신규 내역 등록
-
-  else {
+  } else {
 
     transactions.push({
-
       id: createId(),
-
       ...data
-
     });
-
   }
 
-
-  // 저장 및 화면 갱신
-
-  if (!saveData()) {
-    return;
-  }
+  if (!saveData()) return;
 
   resetForm();
-
   renderAll();
-
 });
 
 
-/* =====================================
-   12. 거래 내역 수정
-===================================== */
+/* 12. 내역 수정 */
 
 function editTransaction(id) {
 
@@ -609,40 +433,25 @@ function editTransaction(id) {
 
   if (!item) return;
 
-
   editingId = id;
 
-
   typeInput.value = item.type;
-
   dateInput.value = item.date;
-
   categoryInput.value = item.category;
-
   amountInput.value = item.amount;
-
   memoInput.value = item.memo || "";
 
-
   submitBtn.textContent = "수정 완료";
-
   cancelEditBtn.hidden = false;
 
-
   form.scrollIntoView({
-
     behavior: "smooth",
-
     block: "start"
-
   });
-
 }
 
 
-/* =====================================
-   13. 거래 내역 삭제
-===================================== */
+/* 13. 내역 삭제 */
 
 function deleteTransaction(id) {
 
@@ -652,123 +461,143 @@ function deleteTransaction(id) {
 
   if (!confirmed) return;
 
-
   const originalTransactions = transactions;
 
   transactions = transactions.filter(
     item => item.id !== id
   );
 
-
   if (!saveData()) {
-
     transactions = originalTransactions;
-
     return;
   }
 
-
   if (editingId === id) {
-
     resetForm();
-
   }
 
-
   renderAll();
-
 }
 
 
-/* =====================================
-   14. 수정 취소
-===================================== */
+/* 14. 수정 취소 */
 
-cancelEditBtn.addEventListener(
-  "click",
-  resetForm
-);
+cancelEditBtn.addEventListener("click", resetForm);
 
 
-/* =====================================
-   15. 이전 달
-===================================== */
+/* 15. 이전 기간 */
 
-$("prevMonth").addEventListener("click", function() {
+$("prevPeriod").addEventListener("click", function() {
 
-  viewAllMonths = false;
+  if (viewMode === "year") {
 
-  selectedMonth = new Date(
+    selectedYear--;
 
-    selectedMonth.getFullYear(),
+  } else if (viewMode === "month") {
 
-    selectedMonth.getMonth() - 1,
+    selectedMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() - 1,
+      1
+    );
 
-    1
+  } else {
 
-  );
+    viewMode = "month";
+
+    selectedMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 1,
+      1
+    );
+  }
 
   resetForm();
-
   renderAll();
-
 });
 
 
-/* =====================================
-   16. 다음 달
-===================================== */
+/* 16. 다음 기간 */
 
-$("nextMonth").addEventListener("click", function() {
+$("nextPeriod").addEventListener("click", function() {
 
-  viewAllMonths = false;
+  if (viewMode === "year") {
 
-  selectedMonth = new Date(
+    selectedYear++;
 
-    selectedMonth.getFullYear(),
+  } else if (viewMode === "month") {
 
-    selectedMonth.getMonth() + 1,
+    selectedMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() + 1,
+      1
+    );
 
-    1
+  } else {
 
-  );
+    viewMode = "month";
+
+    selectedMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + 1,
+      1
+    );
+  }
 
   resetForm();
-
   renderAll();
-
 });
 
 
-/* =====================================
-   17. 전체 기간 보기
-===================================== */
+/* 17. 월별 보기 */
+
+$("monthView").addEventListener("click", function() {
+
+  viewMode = "month";
+
+  selectedMonth = new Date(
+    selectedYear,
+    selectedMonth.getMonth(),
+    1
+  );
+
+  resetForm();
+  renderAll();
+});
+
+
+/* 18. 연도별 보기 */
+
+$("yearView").addEventListener("click", function() {
+
+  viewMode = "year";
+
+  selectedYear = new Date().getFullYear();
+
+  resetForm();
+  renderAll();
+});
+
+
+/* 19. 전체 기간 보기 */
 
 $("allMonths").addEventListener("click", function() {
 
-  viewAllMonths = true;
+  viewMode = "all";
 
   resetForm();
-
   renderAll();
-
 });
 
 
-/* =====================================
-   18. 수입 / 지출 필터
-===================================== */
+/* 20. 수입 / 지출 필터 */
 
 $("filter").addEventListener("change", function() {
-
   renderTransactions();
-
 });
 
 
-/* =====================================
-   19. 최초 실행
-===================================== */
+/* 21. 최초 실행 */
 
 function initializeApp() {
 
@@ -777,8 +606,6 @@ function initializeApp() {
   renderAll();
 
   initializeLogin();
-
 }
 
 initializeApp();
-
