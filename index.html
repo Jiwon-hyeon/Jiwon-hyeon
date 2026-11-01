@@ -4,19 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>지원, 지현 가계부</title>
-  <link rel="stylesheet" href="style.css">
+
+  <title>My Household Ledger</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <script src="./script.js" defer></script>
 </head>
+
 <body>
 
   <!-- 로그인 화면 -->
   <section id="loginScreen" class="login-screen">
+
     <div class="login-box">
+
       <div class="lock-icon">🔒</div>
+
       <h1>My Ledger</h1>
+
       <p>가계부에 접속하려면 비밀번호를 입력하세요.</p>
 
       <form id="loginForm">
+
         <input
           type="password"
           id="passwordInput"
@@ -26,19 +35,27 @@
           placeholder="비밀번호 4자리"
           required
         >
+
         <button type="submit">로그인</button>
-        <p id="loginError" class="login-error" aria-live="polite"></p>
+
+        <p id="loginError" class="login-error"></p>
+
       </form>
+
     </div>
+
   </section>
+
 
   <!-- 가계부 메인 화면 -->
   <main class="container" id="ledgerApp" hidden>
 
+    <!-- 제목 -->
     <header>
       <h1>My Household Ledger</h1>
       <p>나의 수입과 지출을 한눈에 관리하세요.</p>
     </header>
+
 
     <!-- 기간 선택 -->
     <section class="month-area">
@@ -49,13 +66,20 @@
 
       <button type="button" id="nextPeriod">▶</button>
 
-      <button type="button" id="monthView">월별 보기</button>
+      <button type="button" id="monthView">
+        월별 보기
+      </button>
 
-      <button type="button" id="yearView">연도별 보기</button>
+      <button type="button" id="yearView">
+        연도별 보기
+      </button>
 
-      <button type="button" id="allMonths">전체 기간</button>
+      <button type="button" id="allMonths">
+        전체 기간
+      </button>
 
     </section>
+
 
     <!-- 수입 / 지출 합계 -->
     <section class="summary">
@@ -77,6 +101,7 @@
 
     </section>
 
+
     <!-- 내역 입력 -->
     <section class="form-section">
 
@@ -88,20 +113,30 @@
 
           <div>
             <label for="type">구분</label>
+
             <select id="type" required>
               <option value="expense">지출</option>
               <option value="income">수입</option>
             </select>
           </div>
 
+
           <div>
             <label for="date">날짜</label>
-            <input type="date" id="date" required>
+
+            <input
+              type="date"
+              id="date"
+              required
+            >
           </div>
+
 
           <div>
             <label for="category">카테고리</label>
+
             <select id="category" required>
+
               <optgroup label="지출">
                 <option value="식비">식비</option>
                 <option value="교통">교통</option>
@@ -122,11 +157,14 @@
               </optgroup>
 
               <option value="기타">기타</option>
+
             </select>
           </div>
 
+
           <div>
             <label for="amount">금액</label>
+
             <input
               type="number"
               id="amount"
@@ -137,8 +175,10 @@
             >
           </div>
 
+
           <div class="full-width">
             <label for="memo">메모</label>
+
             <input
               type="text"
               id="memo"
@@ -148,9 +188,15 @@
 
         </div>
 
-        <button type="submit" id="submitBtn" class="add-btn">
+
+        <button
+          type="submit"
+          id="submitBtn"
+          class="add-btn"
+        >
           내역 추가하기
         </button>
+
 
         <button
           type="button"
@@ -162,32 +208,41 @@
         </button>
 
       </form>
+
     </section>
+
 
     <!-- 거래 내역 -->
     <section class="list-section">
 
       <div class="list-header">
+
         <h2>거래 내역</h2>
 
         <select id="filter">
+
           <option value="all">전체 내역</option>
+
           <option value="income">수입만 보기</option>
+
           <option value="expense">지출만 보기</option>
+
         </select>
+
       </div>
+
 
       <div id="transactionList"></div>
 
     </section>
 
+
+    <!-- 하단 -->
     <footer>
       <p>My Household Ledger</p>
     </footer>
 
   </main>
-
-  <script src="script.js"></script>
 
 </body>
 </html>
