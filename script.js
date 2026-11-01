@@ -262,3 +262,38 @@ $("filter").addEventListener("change", renderTransactions);
 // 최초 실행
 dateInput.value = new Date().toLocaleDateString("en-CA");
 renderAll();
+
+// 비밀번호 로그인 기능
+
+const CORRECT_PASSWORD = "5180";
+
+const loginScreen = document.getElementById("loginScreen");
+const loginForm = document.getElementById("loginForm");
+const passwordInput = document.getElementById("passwordInput");
+const loginError = document.getElementById("loginError");
+const ledgerApp = document.getElementById("ledgerApp");
+
+// 이전 로그인 상태 확인
+if (sessionStorage.getItem("ledgerLogin") === "true") {
+  loginScreen.hidden = true;
+  ledgerApp.hidden = false;
+}
+
+loginForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  if (passwordInput.value === CORRECT_PASSWORD) {
+    sessionStorage.setItem("ledgerLogin", "true");
+
+    loginScreen.hidden = true;
+    ledgerApp.hidden = false;
+
+    passwordInput.value = "";
+    loginError.textContent = "";
+  } else {
+    loginError.textContent = "비밀번호가 올바르지 않습니다.";
+    passwordInput.value = "";
+    passwordInput.focus();
+  }
+});
+
